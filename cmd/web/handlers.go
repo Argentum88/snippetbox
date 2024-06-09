@@ -6,7 +6,7 @@ import (
 	"github.com/Argentum88/snippetbox/internal/models"
 	"net/http"
 	"strconv"
-	"text/template"
+	//"text/template"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -15,21 +15,31 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ts, err := template.ParseFiles([]string{
-		"ui/html/base.tmpl.html",
-		"ui/html/partials/nav.tmpl.html",
-		"ui/html/pages/home.tmpl.html",
-	}...)
+	snippets, err := app.snippets.Latest()
 	if err != nil {
 		app.serveError(w, err)
 		return
 	}
 
-	err = ts.ExecuteTemplate(w, "base", nil)
-	if err != nil {
-		app.serveError(w, err)
-		return
+	for _, snippet := range snippets {
+		fmt.Fprintf(w, "%+v\n", snippet)
 	}
+
+	//ts, err := template.ParseFiles([]string{
+	//	"ui/html/base.tmpl.html",
+	//	"ui/html/partials/nav.tmpl.html",
+	//	"ui/html/pages/home.tmpl.html",
+	//}...)
+	//if err != nil {
+	//	app.serveError(w, err)
+	//	return
+	//}
+	//
+	//err = ts.ExecuteTemplate(w, "base", nil)
+	//if err != nil {
+	//	app.serveError(w, err)
+	//	return
+	//}
 }
 
 func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
